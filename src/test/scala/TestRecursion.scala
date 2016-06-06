@@ -19,8 +19,12 @@ class TestRecursion extends FunSuite {
     assert(sum(List(1, 2, 3)) == 6)
   }
 
-  test("length a list of numbers") {
+  test("calculate the length a list of numbers") {
     assert(length(List(1, 2, 3)) == 3)
+  }
+
+  test("map a list of As to a list of Bs") {
+   assert(map(List(1, 2, 3), (x: Int) => x.toString) == List("1", "2", "3"))
   }
 
 }

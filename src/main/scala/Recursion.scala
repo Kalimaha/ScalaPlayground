@@ -18,4 +18,9 @@ object Recursion {
     case head :: tail => 1 + length(tail)
   }
 
+  def map[A, B](as: List[A], f: A => B):List[B] = as match {
+   case Nil => Nil
+   case h :: t => f(h) :: map(t, f)
+  }
+
 }
