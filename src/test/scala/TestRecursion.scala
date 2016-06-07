@@ -27,4 +27,24 @@ class TestRecursion extends FunSuite {
    assert(map(List(1, 2, 3), (x: Int) => x.toString) == List("1", "2", "3"))
   }
 
+  test("filter a list") {
+   assert(filter(List(1, 2, 3, 4, 5), (x: Int) => x < 4) == List(1, 2, 3))
+  }
+
+  test("append a list to another") {
+   assert(append(List(1, 2), List(3, 4)) == List(1, 2, 3, 4))
+  }
+
+  test("flatten a list of lists to a singl list") {
+   assert(flatten(List(List(1, 2), List(3, 4))) == List(1, 2, 3, 4)) 
+  }
+
+  test("maximum of a list") {
+   assert(maximum(List(1, 2, 3)) == 3)
+  }
+
+  test("reverse a list") {
+   assert(reverse(List(1, 2, 3)) == List(3, 2, 1))
+  }
+
 }
