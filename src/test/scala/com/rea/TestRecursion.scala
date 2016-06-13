@@ -5,47 +5,47 @@ import org.scalatest.FunSuite
 
 class TestRecursion extends FunSuite {
 
-  test("increase by one") {
+  test("Increase by one.") {
     assert(plusOne(1) == 2)
   }
 
-  test("decrease by one") {
+  test("Decrease by one.") {
     assert(minusOne(1) == 0)
   }
 
-  test("add two numbers") {
+  test("Sum two numbers.") {
     assert(add(2, 3) == 5)
   }
 
-  test("sum a list of numbers") {
+  test("Sum a list of numbers.") {
     assert(sum(List(1, 2, 3)) == 6)
   }
 
-  test("calculate the length a list of numbers") {
+  test("Calculate the length of a list.") {
     assert(length(List(1, 2, 3)) == 3)
   }
 
-  test("map a list of As to a list of Bs") {
+  test("Map a list of A's to a list of B's.") {
    assert(map(List(1, 2, 3), (x: Int) => x.toString) == List("1", "2", "3"))
   }
 
-  test("filter a list") {
+  test("Filter a list.") {
    assert(filter(List(1, 2, 3, 4, 5), (x: Int) => x < 4) == List(1, 2, 3))
   }
 
-  test("append a list to another") {
+  test("Append a list to another.") {
    assert(append(List(1, 2), List(3, 4)) == List(1, 2, 3, 4))
   }
 
-  test("flatten a list of lists to a singl list") {
+  test("Flatten a list of lists to a single list.") {
    assert(flatten(List(List(1, 2), List(3, 4))) == List(1, 2, 3, 4)) 
   }
 
-  test("maximum of a list") {
+  test("Maximum of a list.") {
    assert(maximum(List(1, 2, 3)) == 3)
   }
 
-  test("reverse a list") {
+  test("Reverse a list.") {
    assert(reverse(List(1, 2, 3)) == List(3, 2, 1))
   }
 
