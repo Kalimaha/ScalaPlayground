@@ -40,4 +40,44 @@ class TestPlayground extends FunSuite {
     assert(print(2) == "Printing 2")
   }
 
+  test("The apply method.") {
+    val polite = new SayHalloTo("World")
+    assert(polite() == "Hallo, World!")
+  }
+
+  test("Objects.") {
+    assert(Timer.current == 1)
+  }
+
+  test("Pattern matching.") {
+    assert(intlSayHello("it") == "Ciao!")
+    assert(intlSayHello("es") == "I don't speak es!")
+  }
+
+  test("Pattern matching on the type.") {
+    assert(typeFinder(1) == "This is an integer")
+    assert(typeFinder("1") == "This is a string")
+    assert(typeFinder(1.0) == "I don't know this")
+  }
+
+  test("Collection examples.") {
+    assert(list == List(1, 2, 3))
+    assert(set == Set(1, 2, 3))
+    assert(tuple._1 == "localhost")
+    assert(tuple._2 == 80)
+    assert(map("AL") == "Alabama")
+  }
+
+  test("Square a collection with map.") {
+    assert(timesTwo(List(1, 2, 3)) == List(2, 4, 6))
+  }
+
+  test("Filter a collection with filter.") {
+    assert(filter(List(1, 2, 3)) == List(2))
+  }
+
+  test("Zip two lists in a list of pairs.") {
+    assert(zip(List(1, 2, 3), List(1, 2, 3)) == List((1, 1), (2, 2), (3, 3)))
+  }
+
 }

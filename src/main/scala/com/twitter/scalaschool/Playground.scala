@@ -62,4 +62,93 @@ object Playground {
     */
   def print[K](text: K) = "Printing " + text
 
+  /**
+    * The apply method is the default method of a class.
+    *
+    * @param name The person to be greeted.
+    */
+  class SayHalloTo(name: String) {
+    def apply() = "Hallo, " + name + "!"
+  }
+
+  /**
+    * Objects are used to hold single instances of a class and
+    * are usually used as factories. Objects and classes can have
+    * the same name so the object is used as a factory for the
+    * class with the same name (companion objects).
+    */
+  object Timer {
+    var count = 0
+    def current = {
+      count += 1
+      count
+    }
+  }
+
+  /**
+    * Pattern matching.
+    *
+    * @param lang The desired language.
+    * @return     The greeting.
+    */
+  def intlSayHello(lang: String) = lang match {
+    case "it" => "Ciao!"
+    case "en" => "Hallo!"
+    case _ => "I don't speak " + lang + "!"
+  }
+
+  /**
+    * Pattern matching can be also applied to types.
+    *
+    * @param myType Any type
+    * @tparam K     The generic type
+    * @return       Type recognition
+    */
+  def typeFinder[K](myType: K) = myType match {
+    case i: Int => "This is an integer"
+    case s: String => "This is a string"
+    case _ => "I don't know this"
+  }
+
+  /* A list of numbers. */
+  val list = List(1, 2, 3)
+
+  /* Sets have no duplicates. */
+  val set = Set(1, 1, 2, 2, 3, 3)
+
+  /* A key-value relationship. */
+  val tuple = ("localhost", 80)
+
+  /* A map, which is a collection of tuple. */
+  val map = Map("AL" -> "Alabama", "AK" -> "Alaska")
+
+  /**
+    * Function <code>map</code> applies a given function to
+    * all the elements of a collection and returns a new
+    * collection.
+    *
+    * @param l  The input collection
+    * @return   The squared collection
+    */
+  def timesTwo(l: List[Int]): List[Int] = l.map((i: Int) => i * 2)
+
+  /**
+    * Filter removes the element from a collection based on a
+    * given function and returns a new collection.
+    *
+    * @param l  The input collection
+    * @return   The squared collection
+    */
+  def filter(l: List[Int]): List[Int] = l.filter((i: Int) => i % 2 == 0)
+
+  /**
+    * Zip aggregates two lists in a single list of pairs.
+    *
+    * @param x  The 1st list
+    * @param y  The 2nd list
+    * @tparam K The type of the elements in the lists
+    * @return   A single list of pairs
+    */
+  def zip[K](x: List[K], y: List[K]): List[(K, K)] = x.zip(y)
+
 }
