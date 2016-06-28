@@ -151,4 +151,37 @@ object Playground {
     */
   def zip[K](x: List[K], y: List[K]): List[(K, K)] = x.zip(y)
 
+  /**
+    * Partition divides a list into two list according to a condition.
+    *
+    * @param x  The original list
+    * @return   The partitioned list
+    */
+  def partition(x: List[Int]): (List[Int], List[Int]) = x.partition(_ < 5)
+
+  /**
+    * Find returns the first occurrence according to a given condition.
+    *
+    * @param x  The original list
+    * @return   The result of the search
+    */
+  def find(x: List[Int]): Option[Int] = x.find((i: Int) => i == 5)
+
+  /**
+    * Drop removes the first n elements.
+    *
+    * @param x
+    * @tparam K
+    * @return
+    */
+  def drop[K](x: List[K]): List[K] = x.drop(3)
+
+  /**
+    * DropWhile removes the FIRST element according to a condition.
+    *
+    * @param x
+    * @return
+    */
+  def dropWhile(x: List[Int]): List[Int] = x.dropWhile((i: Int) => i % 2 != 0)
+
 }

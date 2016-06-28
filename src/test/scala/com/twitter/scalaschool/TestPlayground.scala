@@ -80,4 +80,21 @@ class TestPlayground extends FunSuite {
     assert(zip(List(1, 2, 3), List(1, 2, 3)) == List((1, 1), (2, 2), (3, 3)))
   }
 
+  test("Partition divides a list into two list according to a condition.") {
+    assert(partition(List(1, 2, 3, 4, 5)) == (List(1, 2, 3, 4), List(5)))
+  }
+
+  test("Find") {
+    assert(find(List(1, 5, 2, 5, 3, 5)) == Some(5))
+    assert(find(List(1, 3, 7, 11)).isEmpty)
+  }
+
+  test("Drop: it removes the first n elements.") {
+    assert(drop(List(1, 2, 3, 4)) == List(4))
+  }
+
+  test("Drop While: it removes the first element according to a condition.") {
+    assert(dropWhile(List(1, 2, 3, 4)) == List(2, 3, 4))
+  }
+
 }
