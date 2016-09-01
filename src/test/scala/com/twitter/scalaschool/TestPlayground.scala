@@ -101,4 +101,24 @@ class TestPlayground extends FunSuite {
     assert(factorial(5) == 120)
   }
 
+  test("Sum of squares with FoldLeft.") {
+    assert(foldLeft(List(1, 2, 3)) == 14)
+  }
+
+  test("Sum of squares with FoldRight.") {
+    assert(foldRight(List(1, 2, 3)) == 14)
+  }
+
+  test("Flatten a list of lists into a single list.") {
+    assert(flatten(List(List(1, 2), List(3, 4), List(5, 6))) == List(1, 2, 3, 4, 5, 6))
+  }
+
+  test("Convert from Celsius to Fahrenheit by composing functions.") {
+    assert(celsius2fahrenheit_1(10) == 50)
+  }
+
+  test("Composing with andThen.") {
+    assert(aTenthOfTheSquare(10) == 10)
+  }
+
 }

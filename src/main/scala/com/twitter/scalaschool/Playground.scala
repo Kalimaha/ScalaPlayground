@@ -1,5 +1,7 @@
 package com.twitter.scalaschool
 
+import scala.annotation.tailrec
+
 object Playground {
 
   /**
@@ -152,6 +154,7 @@ object Playground {
   def zip[K](x: List[K], y: List[K]): List[(K, K)] = x.zip(y)
 
   /**
+<<<<<<< 9c368320798f97b35b1f584a21c7a4afc4001931
     * Partition divides a list into two list according to a condition.
     *
     * @param x  The original list
@@ -188,5 +191,64 @@ object Playground {
     if (x == 0) 1
     else x * factorial(x - 1)
   }
+
+  /**
+    * FoldLeft applies a function to each element of a collection
+    * and accumulates the results to an initial value.
+    *
+    * In this example the initial value is 0. At each iteration the
+    * function computes the square of the list member and add it
+    * to the accumulator.
+    *
+    * @param l  A list of numbers
+    * @return   Sum of the squares
+    */
+  def foldLeft(l: List[Int]): Int = {
+    l.foldLeft(0) { (acc: Int, next: Int) => acc + (next * next) }
+  }
+
+  /**
+    * Same as FoldRight but going from right to left.
+    *
+    * @param l  A list of numbers
+    * @return   Sum of squares
+    */
+  def foldRight(l: List[Int]): Int = {
+    l.foldLeft(0) { (acc: Int, next: Int) => acc + (next * next) }
+  }
+
+  /**
+    * Flatten collapses one level. In this example the input is
+    * a list of lists, and the result is a list containing
+    * the values of all the nested lists.
+    *
+    * @param l  A list of lists
+    * @return   A singe list
+    */
+  def flatten(l: List[List[Int]]): List[Int] = {
+    l.flatten
+  }
+
+  def step_1(f: Double): Double = f + 32
+  def step_2(f: Double): Double = f / 5
+  def step_3(f: Double): Double = f * 9
+
+  /**
+    * Compose is used to nest functions. In this example we
+    * have: step_1(step_2(step_3(c)))
+    */
+  val steps123_compose = step_1 _ compose step_2 _ compose step_3 _
+  def celsius2fahrenheit_1(c: Double): Double = steps123_compose(c)
+
+  def step_a(i: Int): Int = i * i
+  def step_b(i: Int): Double = i.toFloat / 10
+
+  /**
+    * AndThen is used to queue functions. In this example
+    * we have step_b(step_a(i)). It is like compose but it
+    * calls the first function and then the second.
+    */
+  val and_then = step_a _ andThen step_b _
+  def aTenthOfTheSquare(i: Int): Double = and_then(i)
 
 }
