@@ -97,4 +97,8 @@ class TestPlayground extends FunSuite {
     assert(dropWhile(List(1, 2, 3, 4)) == List(2, 3, 4))
   }
 
+  test("Factorial of 5 is 120.") {
+    assert(factorial(5) == 120)
+  }
+
 }

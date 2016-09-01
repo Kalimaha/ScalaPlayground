@@ -184,4 +184,9 @@ object Playground {
     */
   def dropWhile(x: List[Int]): List[Int] = x.dropWhile((i: Int) => i % 2 != 0)
 
+  def factorial(x: Int): Int = {
+    if (x == 0) 1
+    else x * factorial(x - 1)
+  }
+
 }
