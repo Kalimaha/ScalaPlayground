@@ -8,6 +8,33 @@ object Chapter3 {
     case object Nil extends ManningList[Nothing]
     case class Cons[+A](head: A, tail: ManningList[A]) extends ManningList[A]
 
+  sealed trait ManningTree[+A]
+    case class Leaf[+A](value: A) extends ManningTree[A]
+    case class Branch[+A](left: ManningTree[A], right: ManningTree[A]) extends ManningTree[A]
+
+  object ManningTree {
+
+    def size[A](tree: ManningTree[A]): Int = tree match {
+      case Leaf(_) => 1
+      case Branch(l, r) => 1 + size(l) + size(r)
+    }
+
+    def maximum(tree: ManningTree[Int]): Int = tree match {
+      case Leaf(a) => a
+      case Branch(l, r) => maximum(l) max maximum(r)
+    }
+
+    def depth[A](tree: ManningTree[A]): Int = tree match {
+      case Leaf(_) => 0
+      case Branch(l, r) => 1 + (depth(l) max depth(r))
+    }
+
+    def map[A, B](tree: ManningTree[A])(f: A => B): ManningTree[B] = tree match {
+      case Leaf(a) => Leaf(f(a))
+      case Branch(l, r) => Branch.apply(left = map(l)(f), right = map(r)(f))
+    }
+  }
+
   object ManningList {
 
     def apply[A](as: A*): ManningList[A] = {
