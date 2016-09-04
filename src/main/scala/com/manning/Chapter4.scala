@@ -34,5 +34,12 @@ object Chapter4 {
     case _ => None
   }
 
-  def mean(l: List[Double]): Double = l.sum / l.size
+  def mean(l: List[Double]): Option[Double] = {
+    if (l.isEmpty) None
+    else Some(l.sum / l.size)
+  }
+
+  def variance(l: List[Double]): Option[Double] = {
+    mean(l) flatMap (m => mean(l.map(x => math.pow(x - m, 2))))
+  }
 }
