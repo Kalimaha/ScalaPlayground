@@ -15,6 +15,10 @@ class TestChapter3 extends FunSpec {
       it("counts the nodes of a tree") {
         assert(ManningTree.size(t1) == 7)
       }
+
+      it("withFold") {
+        assert(ManningTree.sizeWithFold(t1) == 7)
+      }
     }
 
     describe("maximum") {
@@ -22,12 +26,20 @@ class TestChapter3 extends FunSpec {
       it("returns the maximum value of a tree") {
         assert(ManningTree.maximum(t1) == 45)
       }
+
+      it("withFold") {
+        assert(ManningTree.maximumWithFold(t1) == 45)
+      }
     }
 
     describe("depth") {
 
       it("calculates the maximum depth from the root to any leaf") {
         assert(ManningTree.depth(t1) == 2)
+      }
+
+      it("withFold") {
+        assert(ManningTree.depthWithFold(t1) == 2)
       }
     }
 

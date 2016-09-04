@@ -33,6 +33,17 @@ object Chapter3 {
       case Leaf(a) => Leaf(f(a))
       case Branch(l, r) => Branch.apply(left = map(l)(f), right = map(r)(f))
     }
+
+    def fold[A, B](tree: ManningTree[A])(f: A => B)(g: (B, B) => B): B = tree match {
+      case Leaf(a) => f(a)
+      case Branch(l, r) => g(fold(l)(f)(g), fold(r)(f)(g))
+    }
+
+    def sizeWithFold[A](tree: ManningTree[A]): Int = fold(tree)(a => 1)(1 + _ + _)
+
+    def maximumWithFold(tree: ManningTree[Int]): Int = fold(tree)(a => a)(_ max _)
+
+    def depthWithFold[A](tree: ManningTree[A]): Int = fold(tree)(a => 0)((a1, a2) => 1 + (a1 max a2))
   }
 
   object ManningList {
