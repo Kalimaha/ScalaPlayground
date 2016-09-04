@@ -5,6 +5,16 @@ import org.scalatest.FunSpec
 
 class TestChapter4 extends FunSpec {
 
+  describe("Some math") {
+
+    describe("mean") {
+
+      it("computes the average") {
+        assert(mean(List(1.0, 2.0, 3.0)) == 2.0)
+      }
+    }
+  }
+
   describe("ManningOption") {
 
     val s1 = ManningSome(42)
