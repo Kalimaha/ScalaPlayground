@@ -73,6 +73,7 @@ class TestChapter4 extends FunSpec {
       val john = find("john")
       println("===")
       println(john.map(_.manager))
+      println("John's manager TYPE is: " + john.flatMap(_.manager))
       println("John's manager is: " + john.flatMap(_.manager).map(_.name).getOrElse("Default Name"))
       println("John's manager role is: " + john.flatMap(_.manager).map(_.role).getOrElse("Default Role"))
     }
