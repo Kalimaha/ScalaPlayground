@@ -64,4 +64,17 @@ class TestChapter4 extends FunSpec {
       it("returns none if the value does NOT satisfy the condition") { assert(actual2 == ManningNone) }
     }
   }
+
+  describe("Employee") {
+
+    it("print") {
+      val jeff = find("jeff")
+      println("Jeff's role is: " + jeff.map(_.role).getOrElse("Default Role"))
+      val john = find("john")
+      println("===")
+      println(john.map(_.manager))
+      println("John's manager is: " + john.flatMap(_.manager).map(_.name).getOrElse("Default Name"))
+      println("John's manager role is: " + john.flatMap(_.manager).map(_.role).getOrElse("Default Role"))
+    }
+  }
 }

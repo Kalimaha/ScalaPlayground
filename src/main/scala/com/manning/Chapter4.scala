@@ -26,11 +26,13 @@ object Chapter4 {
     }
   }
 
-  case class Employee(name: String, role: String, manager: String)
+  case class Employee(name: String, role: String, manager: Option[Employee])
+
+  val jeff = Employee("Jeff Bezos", "CEO", null)
 
   def find(name: String): Option[Employee] = name match {
-    case "jeff" => Some(Employee("Jeff Bezos", "CEO", null))
-    case "john" => Some(Employee("John Doe", "Software Developer", "Jeff"))
+    case "jeff" => Some(jeff)
+    case "john" => Some(Employee("John Doe", "Software Developer", Some(jeff)))
     case _ => None
   }
 
