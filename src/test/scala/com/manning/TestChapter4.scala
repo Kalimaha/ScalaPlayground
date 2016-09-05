@@ -78,4 +78,42 @@ class TestChapter4 extends FunSpec {
       println("John's manager role is: " + john.flatMap(_.manager).map(_.role).getOrElse("Default Role"))
     }
   }
+
+  describe("map2") {
+    val a = Some(2.0)
+    val b = Some(4)
+    def f(d: Double, i: Int): String = s"Hello $d and $i!"
+    assert(map2(a, b)(f) == Some("Hello 2.0 and 4!"))
+  }
+
+  describe("sequence") {
+    val l = List(Some(1), Some(2), Some(3))
+    assert(sequence(l) == Some(List(1, 2, 3)))
+
+    val s = Some(42)
+    def f(i: Int): Option[String] = Some(s"Hello $i!")
+    println(s.flatMap(f).map(s => s.length))
+
+    // a flatMap (aa => b map(bb => f(aa, bb)))
+    println(s flatMap f map(s => s.length) getOrElse "Boom!" )
+  }
+
+  describe("boh") {
+    val pippo = List(1,2,3).flatMap { x =>
+      List(4,5,6).map { y =>
+        x*y
+      }
+    }
+    println("===")
+    println(pippo)
+
+    val pluto = Some(2).flatMap { x =>
+      Some(3).map { y =>
+        x*y
+      }
+    }
+    println("===")
+    println(pluto)
+    println("OPTION can be considered as a LIST of one element!!")
+  }
 }

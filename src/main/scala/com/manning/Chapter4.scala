@@ -44,4 +44,17 @@ object Chapter4 {
   def variance(l: List[Double]): Option[Double] = {
     mean(l) flatMap (m => mean(l.map(x => math.pow(x - m, 2))))
   }
+
+  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
+//    a flatMap (aa => b.map(bb => f(aa, bb)))
+    for {
+      aa <- a
+      bb <- b
+    } yield f(aa, bb)
+  }
+
+  def sequence[A](l: List[Option[A]]): Option[List[A]] = l match {
+    case Nil => Some(Nil)
+    case h::t => h flatMap (hh => sequence(t) map (hh :: _))
+  }
 }
