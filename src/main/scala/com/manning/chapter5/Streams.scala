@@ -1,5 +1,7 @@
 package com.manning.chapter5
 
+import scala.annotation.tailrec
+
 object Streams {
 
   case object ManningEmpty extends ManningStream[Nothing]
@@ -18,6 +20,19 @@ object Streams {
         if (n > 1) ManningStream.cons(h(), t().take(n - 1))
         else ManningStream.cons(h(), ManningEmpty)
     }
+
+    @tailrec
+    final def drop(n: Int): ManningStream[A] = this match {
+      case ManningEmpty => ManningEmpty
+      case ManningCons(h, t) =>
+        if (n > 0) t().drop(n - 1)
+        else ManningCons(h, t)
+    }
+
+//    def takeWhile(f: A => Boolean): ManningStream[A] = this match {
+//      case ManningEmpty => ManningEmpty
+//      case ManningCons(h, t) => if (f(h())) => ManningStream.cons(h(), t() takeWhile f)
+//    }
   }
 
   object ManningStream {

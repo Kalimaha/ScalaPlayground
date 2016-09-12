@@ -20,4 +20,24 @@ class TestStreams extends FunSpec {
       assert(ManningStream(1, 2, 3).take(2).toList == List(1, 2))
     }
   }
+
+  describe("drop") {
+
+    it("skips the first n elements of a stream") {
+      assert(ManningStream(1, 2, 3).drop(2).toList == List(3))
+    }
+
+    it("returns an empty Streams if you try to drop too much") {
+      assert(ManningStream(1, 2, 3).drop(20).toList == List())
+    }
+  }
+
+  describe("takeWhile") {
+
+    it("returns all the elements that match a given predicate") {
+      val f = (i: Int) => i % 2 == 0
+      val s = ManningStream(1, 2, 3, 4, 5)
+      assert(s.takeWhile(f).toList == List(2, 4))
+    }
+  }
 }
