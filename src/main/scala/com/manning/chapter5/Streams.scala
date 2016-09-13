@@ -9,6 +9,8 @@ object Streams {
 
   trait ManningStream[+A] {
 
+    import ManningStream._
+
     def toList: List[A] = this match {
       case ManningEmpty => List()
       case ManningCons(h, t) => h() :: t().toList
@@ -17,8 +19,8 @@ object Streams {
     def take(n: Int): ManningStream[A] = this match {
       case ManningEmpty => ManningEmpty
       case ManningCons(h, t) =>
-        if (n > 1) ManningStream.cons(h(), t().take(n - 1))
-        else ManningStream.cons(h(), ManningEmpty)
+        if (n > 1) cons(h(), t().take(n - 1))
+        else cons(h(), ManningEmpty)
     }
 
     @tailrec
@@ -32,14 +34,14 @@ object Streams {
     def takeWhile(f: A => Boolean): ManningStream[A] = this match {
       case ManningEmpty => ManningEmpty
       case ManningCons(h, t) =>
-        if (f(h())) ManningStream.cons(h(), t() takeWhile f)
+        if (f(h())) cons(h(), t() takeWhile f)
         else t() takeWhile f
     }
 
     def takeWhile2(f: A => Boolean): ManningStream[A] = {
-      foldRight(ManningStream.empty[A])((a, b) =>
-        if (f(a)) ManningStream.cons(a, b)
-        else ManningStream.empty
+      foldRight(empty[A])((a, b) =>
+        if (f(a)) cons(a, b)
+        else empty
       )
     }
 
@@ -58,13 +60,13 @@ object Streams {
 
     def forAll(f: A => Boolean): Boolean = foldRight(true)((a, b) => f(a) && b)
 
-    def map[B](f: A => B): ManningStream[B] = foldRight(ManningStream.empty[B])((a, b) => ManningStream.cons(f(a), b))
+    def map[B](f: A => B): ManningStream[B] = foldRight(empty[B])((a, b) => cons(f(a), b))
 
-    def filter(f: A => Boolean): ManningStream[A] = foldRight(ManningStream.empty[A])((a, b) => if (f(a)) ManningStream.cons(a, b) else b)
+    def filter(f: A => Boolean): ManningStream[A] = foldRight(empty[A])((a, b) => if (f(a)) cons(a, b) else b)
 
-    def append[B >: A](s: => ManningStream[B]): ManningStream[B] = foldRight(s)((h, t) => ManningStream.cons(h, t))
+    def append[B >: A](s: => ManningStream[B]): ManningStream[B] = foldRight(s)((h, t) => cons(h, t))
 
-    def flatMap[B](f: A => ManningStream[B]): ManningStream[B] = foldRight(ManningStream.empty[B])((a, b) => f(a) append b)
+    def flatMap[B](f: A => ManningStream[B]): ManningStream[B] = foldRight(empty[B])((a, b) => f(a) append b)
   }
 
   object ManningStream {
