@@ -86,4 +86,36 @@ class TestStreams extends FunSpec {
       assert(ManningStream(1, 2, 3).flatMap(f).toList == List("1", "2", "3"))
     }
   }
+
+  describe("head") {
+    it("returns the first value of the Stream") {
+      assert(ManningStream(1, 2, 3).head == Some(1))
+    }
+  }
+
+  describe("find") {
+    it("finds the first value in the Stream that matches a given predicate") {
+      assert(ManningStream(1, 2, 3).find(_ < 3) == Some(1))
+    }
+  }
+
+  describe("infinite Streams") {
+    it("generates a Stream of a given value") {
+      assert(Streams.constant(42).take(3).toList == List(42, 42, 42))
+    }
+
+    it("generates a Stream starting from n, then n + 1 and so forth") {
+      assert(Streams.from(42).take(3).toList == List(42, 43, 44))
+    }
+
+    it("generates the Fibonacci Stream") {
+      assert(Streams.fibonacci.take(5).toList == List(0, 1, 1, 2, 3))
+    }
+  }
+
+  describe("unfold") {
+    it("unfolds...") {
+      assert(Streams.unfold(0)(i => Some(i, i + 1)).take(3).toList == List(0, 1, 2))
+    }
+  }
 }

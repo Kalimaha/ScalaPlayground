@@ -7,6 +7,20 @@ object Streams {
   case object ManningEmpty extends ManningStream[Nothing]
   case class ManningCons[+A](h: () => A, t: () => ManningStream[A]) extends ManningStream[A]
 
+  def constant(i: Int): ManningStream[Int] = ManningStream.cons(i, constant(i))
+
+  def from(i: Int): ManningStream[Int] = ManningStream.cons(i, from(i + 1))
+
+  def fibonacci: ManningStream[Int] = {
+    def loop(i0: Int, i1: Int): ManningStream[Int] = ManningStream.cons(i0, loop(i1, i0 + i1))
+    loop(0, 1)
+  }
+
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): ManningStream[A] = f(z) match {
+      case Some((h, s)) => ManningStream.cons(h, unfold(s)(f))
+      case None => ManningStream.empty
+  }
+
   trait ManningStream[+A] {
 
     import ManningStream._
@@ -67,6 +81,13 @@ object Streams {
     def append[B >: A](s: => ManningStream[B]): ManningStream[B] = foldRight(s)((h, t) => cons(h, t))
 
     def flatMap[B](f: A => ManningStream[B]): ManningStream[B] = foldRight(empty[B])((a, b) => f(a) append b)
+
+    def head: Option[A] = this match {
+      case ManningEmpty => None
+      case ManningCons(h, t) => Some(h())
+    }
+
+    def find(f: A => Boolean): Option[A] = filter(f).head
   }
 
   object ManningStream {
