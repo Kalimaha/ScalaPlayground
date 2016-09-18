@@ -33,4 +33,8 @@ object CandyMachine {
     case Coin => Machine(m.coins + 1, m.candies)
     case Turn => Machine(m.coins, m.candies - 1)
   }
+
+  def update2(a: Action)(m: Machine): ((Int, Int), Machine) = (a, m) match {
+    case (Coin, Machine(0, 0)) => ((m.coins + 1, m.candies), Machine(m.coins + 1, m.candies))
+  }
 }
