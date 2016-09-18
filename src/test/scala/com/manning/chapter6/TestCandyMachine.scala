@@ -36,4 +36,13 @@ class TestCandyMachine extends FunSpec {
       assert(State(run).map(f).run(m)._1.getClass.getSimpleName == "String")
     }
   }
+
+  describe("map2") {
+    val sb = State((m: Machine) => ("Hello, world!", m))
+    def f(a: (Int, Int), b: String): Double = (a._1 + a._2).toDouble / b.length
+
+    it("maps two different types into a third one") {
+      println(State(run).map2(sb)(f).run(m))
+    }
+  }
 }
