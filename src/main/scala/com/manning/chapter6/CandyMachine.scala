@@ -14,15 +14,23 @@ case class State[+A, S](run: S => (A, S)) {
     f(v) run s1
   })
 
-  def map[B](f: A => B): State[B, S] = flatMap(s => unit(f(s)))
+  def map[B](f: A => B): State[B, S] =
+    flatMap(s => unit(f(s)))
 
-  def map2[B, C](sb: State[B, S])(f: (A, B) => C): State[C, S] = flatMap(a => sb.map(b => f(a, b)))
+  def map2[B, C](sb: State[B, S])(f: (A, B) => C): State[C, S] =
+    flatMap(a => sb.map(b => f(a, b)))
 }
 
 object State {
-  def unit[S, A](a: A): State[A, S] = State(s => (a, s))
+  def unit[A, S](a: A): State[A, S] = State(s => (a, s))
+
+  def sequence[A, S](as: List[State[A, S]]): State[List[A], S] =
+    as.foldRight(unit[List[A], S](List()))((c, acc) => c.map2(acc)(_ :: _))
 }
 
 object CandyMachine {
-
+  def update = (a: Action) => (m: Machine) => a match {
+    case Coin => Machine(m.coins + 1, m.candies)
+    case Turn => Machine(m.coins, m.candies - 1)
+  }
 }

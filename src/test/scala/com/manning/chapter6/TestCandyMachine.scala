@@ -42,7 +42,14 @@ class TestCandyMachine extends FunSpec {
     def f(a: (Int, Int), b: String): Double = (a._1 + a._2).toDouble / b.length
 
     it("maps two different types into a third one") {
-      println(State(run).map2(sb)(f).run(m))
+      assert(State(run).map2(sb)(f).run(m)._1.getClass.getSimpleName == "double")
+    }
+  }
+
+  describe("sequence") {
+    val as = List(sa)
+    it("converts a list of states into a state with a list as a value") {
+      assert(State.sequence(as).run(m)._1 == List((0, 1000)))
     }
   }
 }
