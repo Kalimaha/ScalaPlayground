@@ -29,12 +29,30 @@ object State {
 }
 
 object CandyMachine {
-  def update = (a: Action) => (m: Machine) => a match {
-    case Coin => Machine(m.coins + 1, m.candies)
-    case Turn => Machine(m.coins, m.candies - 1)
+//  def update = (a: Action) => (m: Machine) => a match {
+//    case Coin => Machine(m.coins + 1, m.candies)
+//    case Turn => Machine(m.coins, m.candies - 1)
+//  }
+
+  case class S(state: (Int, Int), machine: Machine)
+
+  def reduce(a: Action, m: Machine): S = (a, m) match {
+    case (Coin, Machine(_, _)) => S((m.coins + 1, m.candies), Machine(m.coins + 1, m.candies))
+    case (Turn, Machine(_, _)) => S((m.coins, m.candies + 1), Machine(m.coins, m.candies + 1))
   }
 
-  def update2(a: Action)(m: Machine): ((Int, Int), Machine) = (a, m) match {
-    case (Coin, Machine(0, 0)) => ((m.coins + 1, m.candies), Machine(m.coins + 1, m.candies))
+  def simulate(as: List[Action], s0: S): List[S] = as match {
+    case Nil => Nil
+    case h::t =>
+      val s1 = reduce(h, s0.machine)
+      s1 :: simulate(t, s1)
+  }
+
+  def main(args: Array[String]) {
+    val as = List(Coin, Turn)
+    val m0 = Machine(0, 10)
+    val s0 = S((0, 10), m0)
+    val result = simulate(as, s0)
+    println(result)
   }
 }
