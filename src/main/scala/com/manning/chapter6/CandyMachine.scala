@@ -1,58 +1,80 @@
 package com.manning.chapter6
 
-case class Machine(coins: Int, candies: Int)
+case class Machine(locked: Boolean, coins: Int, candies: Int)
 
 sealed trait Action
   case object Coin extends Action
   case object Turn extends Action
 
-case class State[+A, S](run: S => (A, S)) {
-  import State._
-
-  def flatMap[B](f: A => State[B, S]): State[B, S] = State(s0 => {
-    val (v, s1) = run(s0)
-    f(v) run s1
-  })
-
-  def map[B](f: A => B): State[B, S] =
-    flatMap(s => unit(f(s)))
-
-  def map2[B, C](sb: State[B, S])(f: (A, B) => C): State[C, S] =
+case class State[S, +A](run: S => (A, S)) {
+  def map[B](f: A => B): State[S, B] =
+    flatMap(a => State.unit(f(a)))
+  def map2[B,C](sb: State[S, B])(f: (A, B) => C): State[S, C] =
     flatMap(a => sb.map(b => f(a, b)))
+  def flatMap[B](f: A => State[S, B]): State[S, B] = State(s => {
+    val (a, s1) = run(s)
+    f(a).run(s1)
+  })
 }
 
 object State {
-  def unit[A, S](a: A): State[A, S] = State(s => (a, s))
+  def unit[S, A](a: A): State[S, A] = State(s => (a, s))
 
-  def sequence[A, S](as: List[State[A, S]]): State[List[A], S] =
-    as.foldRight(unit[List[A], S](List()))((c, acc) => c.map2(acc)(_ :: _))
+  def sequence[S, A](sas: List[State[S, A]]): State[S, List[A]] = {
+    def go(s: S, actions: List[State[S,A]], acc: List[A]): (List[A],S) =
+      actions match {
+        case Nil => (acc.reverse,s)
+        case h :: t => h.run(s) match { case (a,s2) => go(s2, t, a :: acc) }
+      }
+    State((s: S) => go(s,sas,List()))
+  }
+
+  def modify[S](f: S => S): State[S, Unit] = for {
+    s <- get
+    _ <- set(f(s))
+  } yield ()
+
+  def modifyDOH[Banana](f: Banana => Banana): State[Banana, Unit] =
+    get.flatMap(s => {
+      println(s"s DENTRO FLATMAP DI GET: $s")
+      println(s"s ADESSO PASSO A SET: ${f(s)}")
+      set(f(s))
+    })
+
+  def get[S]: State[S, S] = State(s => (s, s))
+
+  def getDOH[Banana]: State[Banana, Banana] = State(b => (b, b))
+
+  def set[S](s: S): State[S, Unit] = {
+    println(s"SET CHIAMATO DOPO IL GET $s")
+    State(_ => ((), s))
+  }
 }
 
 object CandyMachine {
-//  def update = (a: Action) => (m: Machine) => a match {
-//    case Coin => Machine(m.coins + 1, m.candies)
-//    case Turn => Machine(m.coins, m.candies - 1)
-//  }
+  import State._
 
-  case class S(state: (Int, Int), machine: Machine)
+  def update = (i: Action) => (s: Machine) =>
+    (i, s) match {
+      case (_, Machine(_, 0, _)) => s
+      case (Coin, Machine(false, _, _)) => s
+      case (Turn, Machine(true, _, _)) => s
+      case (Coin, Machine(true, candy, coin)) =>
+        Machine(locked = false, candy, coin + 1)
+      case (Turn, Machine(false, candy, coin)) =>
+        Machine(locked = true, candy - 1, coin)
+    }
 
-  def reduce(a: Action, m: Machine): S = (a, m) match {
-    case (Coin, Machine(_, _)) => S((m.coins + 1, m.candies), Machine(m.coins + 1, m.candies))
-    case (Turn, Machine(_, _)) => S((m.coins, m.candies + 1), Machine(m.coins, m.candies + 1))
-  }
+  def simulateMachine(inputs: List[Action]): State[Machine, (Int, Int)] = for {
+    _ <- sequence(inputs map (modify[Machine] _ compose update))
+    s <- get
+  } yield (s.coins, s.candies)
 
-  def simulate(as: List[Action], s0: S): List[S] = as match {
-    case Nil => Nil
-    case h::t =>
-      val s1 = reduce(h, s0.machine)
-      s1 :: simulate(t, s1)
-  }
+  def simulateMachineDOH(inputs: List[Action]): State[Machine, (Int, Int)] =
+    sequence(inputs map (modify[Machine] _ compose update)).flatMap(_ => get.map(s => (s.coins, s.candies)))
 
   def main(args: Array[String]) {
-    val as = List(Coin, Turn)
-    val m0 = Machine(0, 10)
-    val s0 = S((0, 10), m0)
-    val result = simulate(as, s0)
-    println(result)
+    println(simulateMachine(List(Coin, Turn, Coin, Coin)).run(Machine(locked = true, 10, 0)))
+    println(simulateMachineDOH(List(Coin, Turn, Coin, Coin)).run(Machine(locked = true, 10, 0)))
   }
 }
