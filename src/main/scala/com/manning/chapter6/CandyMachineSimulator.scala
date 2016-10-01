@@ -21,10 +21,15 @@ case class ComputationStep[S, +V](run: S => (V, S)) {
 object ComputationStep {
   def unit[S, V](v: V): ComputationStep[S, V] = ComputationStep(s => (v, s))
 
-  def get[V]: ComputationStep[V, V] = ComputationStep(v => (v, v))
+  def get[V]: ComputationStep[V, V] = ComputationStep(v => {
+    println("[GET]")
+    println("\t" + v)
+    (v, v)
+  })
 
   def set[V](v: V): ComputationStep[V, Unit] = {
-    println(s"SETTING $v")
+    println("[SET]")
+    println("\t" + v)
     ComputationStep(_ => ((), v))
   }
 
@@ -34,6 +39,8 @@ object ComputationStep {
   } yield ()
 
   def sequence[S, V](l: List[ComputationStep[S, V]]): ComputationStep[S, List[V]] = {
+    println("[SEQUENCE]")
+    println("\t" + l)
     def go(s: S, actions: List[ComputationStep[S, V]], acc: List[V]): (List[V], S) =
       actions match {
         case Nil => (acc.reverse,s)
@@ -47,32 +54,71 @@ object CandyMachineSimulator {
   import ComputationStep._
 
   def main(args: Array[String]) {
-    def update = (a: MachineAction) => (m: VendingMachine) => (a, m) match {
-      case (MachineCoin, VendingMachine(true, _, _)) => VendingMachine(locked = false, m.coins + 1, m.candies)
-      case (MachineTurn, VendingMachine(false, _, _)) => VendingMachine(locked = true, m.coins, m.candies - 1)
-    }
+    val spark = VendingMachine(locked = true, 0, 10)
+
+    def update: MachineAction => VendingMachine => VendingMachine =
+      (a: MachineAction) => (m: VendingMachine) => {
+        println("[UPDATE]")
+        println("\t" + a)
+        println("\t" + m)
+        (a, m) match {
+          case (MachineCoin, VendingMachine(true, _, _)) =>
+            VendingMachine(locked = false, m.coins + 1, m.candies)
+          case (MachineTurn, VendingMachine(false, _, _)) =>
+            VendingMachine(locked = true, m.coins, m.candies - 1)
+        }
+      }
+
+    println("[UPDATE DEFINITION]")
+    println(update(MachineTurn))
+    println(update(MachineTurn)(spark))
 
     val actions: List[MachineAction] = List(MachineCoin, MachineTurn, MachineCoin, MachineTurn)
 
-    val steps = actions.map(modify[VendingMachine] _ compose update)
+    def updateAndModify: MachineAction => ComputationStep[VendingMachine, Unit] = {
+      println("[updateAndModify]")
+      modify[VendingMachine] _ compose update
+    }
 
-    val sf: ComputationStep[VendingMachine, (Int, Int)] =
-      sequence(steps).flatMap(
-        (pippo: List[Unit]) => get.map(
-          vendingMachine => {
-            println(vendingMachine)
-            (vendingMachine.coins, vendingMachine.candies)
-          }
-        )
-      )
+    val steps = actions.map(updateAndModify)
 
-    val sf2: ComputationStep[VendingMachine, (Int, Int)] = for {
-      _ <- sequence(steps)
-      s <- get
-    } yield (s.coins, s.candies)
+//    val steps2 = actions.map(reduce)
+//    println("[STEPS2]")
+//    println("\t" + steps2)
+//    println("\t" + steps2.head(spark))
+
+    println("[STEPS]")
+    println("\t" + steps)
+
+    val seq = sequence(steps)
+
+//    print("[SEQUENCE]")
+//    println("\t" + seq)
+//    println("\t" + seq.run(spark))
+
+//    val seqMap = seq.map(_.toString())
+//
+//    print("[SEQUENCE MAP]")
+//    println("\t" + seqMap)
+//    println("\t" + seqMap.run(spark))
+
+//    val sf: ComputationStep[VendingMachine, (Int, Int)] =
+//      sequence(steps).flatMap(
+//        (pippo: List[Unit]) => {
+//          println("[FLATMAP]")
+//          println(pippo)
+//          get.map(
+//            vendingMachine => {
+//              println("[FINAL MAP]")
+//              println("\t" + vendingMachine)
+//              (vendingMachine.coins, vendingMachine.candies)
+//            }
+//          )
+//        }
+//      )
 
 //    println(sequence(steps).run(VendingMachine(locked = true, 0, 10)))
-    val ((coins, candies), machine) = sf.run(VendingMachine(locked = true, 0, 10))
+//    val ((coins, candies), machine) = sf.run(VendingMachine(locked = true, 0, 10))
 //    println("<== ==>")
 //    println(sf2.run(VendingMachine(locked = true, 0, 10)))
 //    println(coins)
