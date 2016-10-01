@@ -53,6 +53,7 @@ class TestHOFunctions extends FunSpec {
   describe("compose") {
     def f(b: Double): String = s"I received $b."
     def g(a: Int): Double = 1.0 * a
+
     it("composes two functions") {
       assert(compose(f, g)(42) == "I received 42.0.")
     }
