@@ -36,10 +36,9 @@ object MyList {
 
   def drop[A](l: MyList[A])(n: Int): MyList[A] = {
     @tailrec
-    def loop(acc: Int)(l: MyList[A]): MyList[A] = {
+    def loop(acc: Int)(l: MyList[A]): MyList[A] =
       if (acc == n) l
       else loop(1 + acc)(tail(l))
-    }
     loop(0)(l)
   }
 
@@ -50,6 +49,14 @@ object MyList {
 
   def dropWhile[A](f: A => Boolean)(l: MyList[A]): MyList[A] = l match {
     case MyNil => MyNil
-    case MyCons(h, t) => if (f(h)) dropWhile(f)(t) else MyCons(h, dropWhile(f)(t))
+    case MyCons(h, t) =>
+      if (f(h)) dropWhile(f)(t)
+      else MyCons(h, dropWhile(f)(t))
+  }
+
+  def init[A](l: MyList[A]): MyList[A] = l match {
+    case MyNil => MyNil
+    case MyCons(_, MyNil) => MyNil
+    case MyCons(h, t) => MyCons(h, init(t))
   }
 }
