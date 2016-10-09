@@ -48,7 +48,11 @@ class TestMyList extends FunSpec {
 
   describe("append") {
     it("appends an element to a list") {
-      assert(append(MyList(1, 2, 3))(MyList(4, 5, 6)) == MyList(1, 2, 3, 4, 5, 6))
+      assert(append(MyList(1, 2, 3), MyList(4, 5, 6)) == MyList(1, 2, 3, 4, 5, 6))
+    }
+
+    it("appends an element to a list (with foldRight)") {
+      assert(appendWithFoldRight(MyList(1, 2, 3))(MyList(4, 5, 6)) == MyList(1, 2, 3, 4, 5, 6))
     }
   }
 
@@ -61,6 +65,72 @@ class TestMyList extends FunSpec {
   describe("init") {
     it("removes the last element of the list") {
       assert(init(MyList(1, 2, 3)) == MyList(1, 2))
+    }
+  }
+
+  describe("foldLeft") {
+    it("collapses a list to a single value") {
+      assert(foldLeft(MyList(1, 2, 3, 4, 5))(0)(_ + _) ==  15)
+      assert(foldLeft(MyList(1, 2, 3, 4, 5))(1)(_ * _) == 120)
+    }
+  }
+
+  describe("foldRight") {
+    it("collapses a list to a single value") {
+      assert(foldRight(MyList(1, 2, 3, 4, 5), 0)(_ + _) ==  15)
+      assert(foldRight(MyList(1, 2, 3, 4, 5), 1)(_ * _) == 120)
+    }
+  }
+
+  describe("length") {
+    it("computes the length of a list") {
+      assert(length(MyList(1, 2, 3)) == 3)
+    }
+  }
+
+  describe("addOne") {
+    it("add one to each element of a list") {
+      assert(addOne(MyList(1, 2, 3)) == MyList(2, 3, 4))
+    }
+  }
+
+  describe("double2String") {
+    it("converts a list of doubles into alist of strings") {
+      assert(double2String(MyList(1.0, 2.0, 3.0)) == MyList("1.0", "2.0", "3.0"))
+    }
+  }
+
+  describe("map") {
+    it("maps all the elements of a list into another type") {
+      assert(map(MyList(1, 2, 3))(_.toString) == MyList("1", "2", "3"))
+    }
+  }
+
+  describe("filter") {
+    it("filters out odd numbers") {
+      assert(filter(MyList(1, 2, 3))(_ % 2 != 0) == MyList(1, 3))
+    }
+
+    it("filters out odd numbers (with flatMap)") {
+      assert(filterWithFlatMap(MyList(1, 2, 3))(_ % 2 != 0) == MyList(1, 3))
+    }
+  }
+
+  describe("flatMap") {
+    it("flat and then maps") {
+      assert(flatMap(MyList(1, 2, 3))((a: Int) => MyList(a.toString)) == MyList("1", "2", "3"))
+    }
+  }
+
+  describe("addPairwise") {
+    it("sums the corresponding elements of two lists") {
+      assert(addPairwise(MyList(1, 2, 3), MyList(4, 5, 6)) == MyList(5, 7, 9))
+    }
+  }
+
+  describe("zipWith") {
+    it("combines the corresponding elements of two lists") {
+      assert(zipWith(MyList(1, 2, 3), MyList("4", "5", "6"))((i: Int, s: String) => 1.0 * i / s.toDouble) == MyList(0.25, 0.4, 0.5))
     }
   }
 }
