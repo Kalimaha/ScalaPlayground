@@ -2,7 +2,6 @@ package com.manning.part1.chapter3
 
 import scala.annotation.tailrec
 
-
 sealed trait MyList[+A]
   case object MyNil extends MyList[Nothing]
   case class  MyCons[+A](head: A, tail: MyList[A]) extends MyList[A]
