@@ -15,7 +15,7 @@ case class MySome[+A](get: A) extends MyOption[A] {
 
   def getOrElse[B >: A](default: => B): B = this.get
 
-  def orElse[B >: A](o: MyOption[B]): MyOption[B] = MySome(this.get)
+  def orElse[B >: A](o: MyOption[B]): MyOption[B] = this
 
   def filter(f: A => Boolean): MyOption[A] = if (f(this.get)) this else MyNone
 }
@@ -30,4 +30,21 @@ case object MyNone extends MyOption[Nothing] {
   def orElse[B >: Nothing](o: MyOption[B]): MyOption[B] = o
 
   def filter(f: Nothing => Boolean): MyOption[Nothing] = MyNone
+}
+
+case class Employee(name: String, company: String, manager: MyOption[Employee])
+
+object Employee {
+  def lookupByName(name: String): MyOption[Employee] =
+    if (name.equalsIgnoreCase("Jeff")) MySome(Employee("Jeff Bezos", "Amazon", MyNone))
+    else MyNone
+}
+
+object Utils {
+  def mean(xs: List[Double]): MyOption[Double] =
+    if (xs.isEmpty) MyNone
+    else MySome(xs.sum / xs.length)
+
+  def variance(xs: List[Double]): MyOption[Double] =
+    mean(xs) flatMap (m => mean(xs.map (x => math.pow(x - m, 2))))
 }
